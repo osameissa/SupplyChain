@@ -1,5 +1,6 @@
 const SHA256 = require('crypto-js/sha256');
 
+// declaring structure for blocks
 class Block {
     constructor(index, previousHash, timestamp, data, hash) {
         this.index = index;
@@ -10,6 +11,7 @@ class Block {
     }
 }
 
+// blockchain functions
 class Blockchain {
     constructor(difficulty) {
         this.chain = [this.createGenesisBlock()];
@@ -44,13 +46,13 @@ class Blockchain {
             const currentBlock = this.chain[i];
             const previousBlock = this.chain[i - 1];
 
-            // Validate data
+            // validate data
             if (currentBlock.data !== currentBlock.data) return false;
 
-            // Validate block hash
+            // validate block hash
             if (currentBlock.hash !== this.calculateHash(currentBlock.index, currentBlock.previousHash, currentBlock.timestamp, currentBlock.data)) return false;
 
-            // Validate previous block hash
+            // validate previous block hash
             if (currentBlock.previousHash !== previousBlock.hash) return false;
         }
         return true;

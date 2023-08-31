@@ -12,21 +12,25 @@ class Network {
         this.app.use(bodyParser.urlencoded({ extended: false }));
         this.setupEndpoints();
         this.app.listen(port, () => console.log('Listening on port ' + port));
-        setInterval(this.resolveConflicts.bind(this), 10000); // resolve conflicts every 10 seconds
+        //  periodically resolve conflicts between nodes every 10 seconds
+        setInterval(this.resolveConflicts.bind(this), 10000);
     }
 
+    // API-endpoints
     setupEndpoints() {
+        // endpoint to retrieve blocks in blockchain
         this.app.get('/blocks', (req, res) => {
             res.json(this.blockchain.chain);
         });
 
-
+        // endpoint to add a new block to the blockchain
         this.app.post('/mine', (req, res) => {
             const data = req.body.data;
             this.blockchain.addBlock(data);
             res.json(this.blockchain.chain);
         });
 
+       // endpoint to register new nodes into network 
         this.app.post('/nodes/register', (req, res) => {
             const nodes = req.body.nodes;
             if (!nodes) {
@@ -39,6 +43,7 @@ class Network {
             res.json({ message: 'New nodes have been added', nodes: this.nodes });
         });
 
+        // endpoint to resolve conflicts and achieve consensus among nodes
         this.app.get('/nodes/resolve', (req, res) => {
             this.resolveConflicts(() => {
                 res.json(this.blockchain.chain);
@@ -46,6 +51,7 @@ class Network {
         });
     }
 
+    // resolve conflicts and achieve consensus among nodes
     resolveConflicts(callback = () => {}) {
         let newChain = null;
         let maxLength = this.blockchain.chain.length;
@@ -65,6 +71,7 @@ class Network {
             });
         });
 
+        // wait for all requests to complete, then update the chain if needed
         Promise.all(requests).then(() => {
             if (newChain) {
                 this.blockchain.chain = newChain;
