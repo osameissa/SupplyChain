@@ -1,7 +1,7 @@
 const Network = require('./src/network'); 
 
-// node index.js 3000 
-// port = 3000
+// node index.js x
+// port = x
 const port = process.argv[2];
 const difficulty = 1;
 const network = new Network(port, difficulty);

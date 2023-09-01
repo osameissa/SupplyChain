@@ -16,7 +16,6 @@ class Network {
         setInterval(this.resolveConflicts.bind(this), 10000);
     }
 
-    // API-endpoints
     setupEndpoints() {
         // endpoint to retrieve blocks in blockchain
         this.app.get('/blocks', (req, res) => {
@@ -43,7 +42,7 @@ class Network {
             res.json({ message: 'New nodes have been added', nodes: this.nodes });
         });
 
-        // endpoint to resolve conflicts and achieve consensus among nodes
+        // endpoint to resolve conflicts
         this.app.get('/nodes/resolve', (req, res) => {
             this.resolveConflicts(() => {
                 res.json(this.blockchain.chain);
@@ -51,7 +50,7 @@ class Network {
         });
     }
 
-    // resolve conflicts and achieve consensus among nodes
+    // resolve and validate consensus among nodes
     resolveConflicts(callback = () => {}) {
         let newChain = null;
         let maxLength = this.blockchain.chain.length;
